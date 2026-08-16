@@ -171,7 +171,7 @@ public class LongVideoContextService {
         }
         return chunks.stream()
                 .sorted(Comparator.comparingDouble((VideoChunk chunk) -> {
-                    Double score = vectorScores.get(chunk.startMs() + ":" + chunk.endMs());
+                    Double score = vectorScores.get(chunk.startTime() + ":" + chunk.endTime());
                     return score == null
                             ? hybridScore(goal, queryEmbedding, chunk)
                             : score * 0.7 + keywordScore(goal, chunk) * 0.3;

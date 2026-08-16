@@ -1,0 +1,43 @@
+# VidMind-AI 共享中间件部署模式（共享 TJNovel 的 MySQL/Redis/MinIO）
+# 仅启动 VidMind-AI 独有的中间件：Qdrant + RocketMQ
+# 用法: docker compose -f docker-compose.shared.yml up -d
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - ./qdrant/data:/qdrant/storage
+
+  rmqnamesrv:
+    image: apache/rocketmq:4.9.4
+    ports:
+      - "9876:9876"
+    environment:
+      JAVA_OPT_EXT: -server -Xms256m -Xmx256m -Xmn128m
+    command: sh mqnamesrv
+
+  rmqbroker:
+    image: apache/rocketmq:4.9.4
+    ports:
+      - "10911:10911"
+      - "10909:10909"
+    environment:
+      NAMESRV_ADDR: rmqnamesrv:9876
+      BROKER_ID: 0
+      BROKER_ROLE: ASYNC_MASTER
+      JAVA_OPT_EXT: -server -Xms256m -Xmx256m -Xmn128m
+    volumes:
+      - ./rocketmq/broker.conf:/opt/rocketmq-4.9.4/conf/broker.conf
+    command: sh mqbroker -n rmqnamesrv:9876 -c /opt/rocketmq-4.9.4/conf/broker.conf
+    depends_on:
+      - rmqnamesrv
+
+  rmqdashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    ports:
+      - "8180:8082"
+    environment:
+      JAVA_OPTS: -Drocketmq.namesrv.addr=rmqnamesrv:9876
+    depends_on:
+      - rmqnamesrv

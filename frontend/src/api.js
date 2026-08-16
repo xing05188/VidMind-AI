@@ -1,4 +1,5 @@
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:9090').replace(/\/$/, '')
+// 默认同源（走 Vite proxy 转发到后端 9090），也可通过 VITE_API_BASE_URL 覆盖
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '')
 const TOKEN_KEY = 'authToken'
 
 export function hasAuthToken() {

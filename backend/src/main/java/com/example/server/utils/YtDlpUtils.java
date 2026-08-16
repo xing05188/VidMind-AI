@@ -22,11 +22,17 @@ public class YtDlpUtils {
 
     private final String ytDlpPath;
     private final String ffmpegDir;
+    private final String cookiesFile;
+    private final String userAgent;
 
     public YtDlpUtils(@Value("${tool.ytdlp.path}") String ytDlpPath,
-                      @Value("${tool.ffmpeg.dir}") String ffmpegDir) {
+                      @Value("${tool.ffmpeg.dir}") String ffmpegDir,
+                      @Value("${tool.ytdlp.cookies-file}") String cookiesFile,
+                      @Value("${tool.ytdlp.user-agent}") String userAgent) {
         this.ytDlpPath = ytDlpPath;
         this.ffmpegDir = ffmpegDir;
+        this.cookiesFile = cookiesFile;
+        this.userAgent = userAgent;
     }
 
     public File downloadVideo(String url) throws Exception {
@@ -40,6 +46,12 @@ public class YtDlpUtils {
         command.add("30");
         command.add("--retries");
         command.add("3");
+        command.add("--user-agent");
+        command.add(userAgent);
+        if (cookiesFile != null && !cookiesFile.isBlank() && Files.isRegularFile(Path.of(cookiesFile))) {
+            command.add("--cookies");
+            command.add(cookiesFile);
+        }
         command.add("--max-filesize");
         command.add("2048M");
         command.add("--recode-video");

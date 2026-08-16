@@ -1,9 +1,12 @@
 package com.example.server.utils;
 
+import io.minio.GetObjectArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
+import io.minio.StatObjectArgs;
+import io.minio.StatObjectResponse;
 import io.minio.http.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +103,25 @@ public class MinioUtils {
         } catch (Exception e) {
             throw new IllegalStateException("MinIO 预签名地址生成失败", e);
         }
+    }
+
+    public InputStream open(String fileUrl) throws Exception {
+        return minioClient.getObject(GetObjectArgs.builder()
+                .bucket(bucketName)
+                .object(objectName(fileUrl))
+                .build());
+    }
+
+    public String contentType(String fileUrl) throws Exception {
+        StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder()
+                .bucket(bucketName)
+                .object(objectName(fileUrl))
+                .build());
+        return stat.contentType() == null ? "application/octet-stream" : stat.contentType();
+    }
+
+    public boolean isOwned(String fileUrl) {
+        return fileUrl != null && fileUrl.startsWith(endpoint + "/" + bucketName + "/");
     }
 
     private String objectUrl(String objectName) {

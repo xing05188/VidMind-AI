@@ -5,11 +5,13 @@ import com.example.server.dto.AuthRequest;
 import com.example.server.dto.AuthResponse;
 import com.example.server.entity.User;
 import com.example.server.mapper.UserMapper;
+import com.example.server.utils.MinioUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -37,14 +39,17 @@ public class AuthService {
     private static final long LOGIN_FAILURE_WINDOW_MINUTES = 10;
     private static final int MAX_PASSWORD_LENGTH = 128;
     private static final int MAX_NICKNAME_LENGTH = 50;
+    private static final long MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 
     private final StringRedisTemplate redisTemplate;
     private final UserMapper userMapper;
+    private final MinioUtils minioUtils;
     private final SecureRandom secureRandom = new SecureRandom();
 
-    public AuthService(StringRedisTemplate redisTemplate, UserMapper userMapper) {
+    public AuthService(StringRedisTemplate redisTemplate, UserMapper userMapper, MinioUtils minioUtils) {
         this.redisTemplate = redisTemplate;
         this.userMapper = userMapper;
+        this.minioUtils = minioUtils;
     }
 
     public AuthResponse register(AuthRequest request) {
@@ -112,6 +117,51 @@ public class AuthService {
         if (user == null || !"ADMIN".equals(user.getRole())) {
             throw new SecurityException("仅管理员可操作失败任务");
         }
+    }
+
+    public AuthResponse updateAvatar(Long userId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return response(400, "请选择头像图片", null, null);
+        }
+        String contentType = file.getContentType();
+        boolean imageType = contentType != null && (contentType.equals("image/jpeg")
+                || contentType.equals("image/png")
+                || contentType.equals("image/webp")
+                || contentType.equals("image/gif"));
+        if (!imageType) {
+            return response(400, "仅支持 JPG/PNG/WEBP/GIF 格式的图片", null, null);
+        }
+        if (file.getSize() > MAX_AVATAR_BYTES) {
+            return response(400, "头像图片不能超过 2MB", null, null);
+        }
+
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            return response(404, "用户不存在", null, null);
+        }
+
+        String newAvatar;
+        try {
+            newAvatar = minioUtils.uploadFile(file);
+        } catch (Exception e) {
+            log.error("avatar_upload_failed userId={}", userId, e);
+            return response(500, "头像上传失败，请稍后重试", null, null);
+        }
+
+        String oldAvatar = user.getAvatar();
+        if (oldAvatar != null && !oldAvatar.isBlank() && minioUtils.isOwned(oldAvatar)
+                && !oldAvatar.equals(newAvatar)) {
+            try {
+                minioUtils.removeFile(oldAvatar);
+            } catch (Exception e) {
+                log.warn("avatar_old_delete_failed userId={}", userId, e);
+            }
+        }
+
+        user.setAvatar(newAvatar);
+        userMapper.updateById(user);
+        log.info("avatar_updated userId={}", userId);
+        return response(200, "头像已更新", userView(user), null);
     }
 
     public String hashPassword(String password) {
