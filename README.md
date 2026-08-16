@@ -194,9 +194,11 @@ Compose 会依次启动以下服务：
 
 ### 3. 启动后端
 
+后端为 Maven 项目（已内置 `mvnw` 包装器）。
+
 ```bash
 set -a && source .env && set +a
-cd server
+cd backend
 ./mvnw spring-boot:run
 ```
 
@@ -204,9 +206,11 @@ cd server
 
 ### 4. 启动前端
 
+前端基于 Vite + Vue 3。
+
 ```bash
 set -a && source .env && set +a
-cd client
+cd frontend
 npm install
 npm run dev
 ```
@@ -219,14 +223,18 @@ npm run dev
 
 ```text
 VidMind-AI
-├── client/              # Vue 3 前端工作台
+├── frontend/            # Vue 3 前端工作台（Vite）
 │   ├── src/
 │   │   ├── api.js              # API 请求封装
 │   │   ├── chunkUpload.js      # 分片上传逻辑
 │   │   ├── taskEvents.js       # SSE 任务事件处理
-│   │   └── useAnalysisWorkspace.js  # Agent 工作台组合式函数
-│   └── ...
-├── server/              # Spring Boot 后端服务
+│   │   ├── useAnalysisWorkspace.js  # Agent 工作台组合式函数
+│   │   ├── App.vue             # 主工作台组件
+│   │   ├── NavBar.vue          # 顶部导航栏
+│   │   └── AuthModal.vue       # 登录/注册弹窗
+│   ├── vite.config.js
+│   └── package.json
+├── backend/             # Spring Boot 后端服务（Maven）
 │   ├── src/main/java/com/example/server/
 │   │   ├── controller/         # REST API 控制器
 │   │   ├── service/            # 核心业务逻辑
@@ -237,7 +245,8 @@ VidMind-AI
 │   │   ├── consumer/           # RocketMQ 消费者
 │   │   ├── dto/                # 数据传输对象
 │   │   └── utils/              # 工具类
-│   └── ...
+│   ├── pom.xml
+│   └── mvnw
 ├── rocketmq/           # RocketMQ Broker 配置
 ├── docker-compose.yml  # 中间件 Docker 编排
 └── .env.example        # 本地配置模板

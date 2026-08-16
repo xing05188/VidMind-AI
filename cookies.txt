@@ -40,7 +40,6 @@ www.bilibili.com	FALSE	/	FALSE	1786894304	bmg_src_def_domain	i2.hdslb.com
 .douyin.com	TRUE	/	FALSE	1791971545	bd_ticket_guard_client_data_v2	eyJyZWVfcHVibGljX2tleSI6IkJMQThhU0dKNlBKZ0t0bjJUSURMcVRab3ZVaWxjVUR2N1l5L0ZOeFgxRzF5MWcrNlBFcFZmbndaQk1qbVhjbFZnWUhXMzFZWVFyd28yUmoyTmtVMDVoWT0iLCJ0c19zaWduIjoidHMuMi42YjAxODc0ZDk0NDQ4ZWQ3NDc5ZDBhNjUzNjhjNWZjMThjYTUwZjg2MTliNGZhMmU0YzQ3YTE3MWQ4YzNhNzEzYzRmYmU4N2QyMzE5Y2YwNTMxODYyNGNlZGExNDkxMWNhNDA2ZGVkYmViZWRkYjJlMzBmY2U4ZDRmYTAyNTc1ZCIsInJlcV9jb250ZW50Ijoic2VjX3RzIiwicmVxX3NpZ24iOiJoeXdNMlJ4TXJjRVBCMTEwbzBTaUV6NndoRHRjWHZFMkJwUkE0YzlzeGM4PSIsInNlY190cyI6IiNrTHJsTW02OEdxMHVBQ0dhYUxoU2pSamxjSGlNR0dzTk9GNW1lQkdkS3VpdnJKZlZMR2hGK3Q2VmNIb3AifQ%3D%3D
 .douyin.com	TRUE	/	FALSE	1820666932	live_use_vvc	%22false%22
 .douyin.com	TRUE	/	FALSE	1807883045	login_time	1773323045480
-.douyin.com	TRUE	/	TRUE	1786811833	passport_csrf_token	b1f002289368d20828f516e99137a4be
 .douyin.com	TRUE	/	FALSE	1787392338	home_can_add_dy_2_desktop	%221%22
 .douyin.com	TRUE	/	FALSE	1821341115	my_rd	2
 .douyin.com	TRUE	/	TRUE	1791290930	sid_ucp_v1	1.0.0-KGEwODRmNzZhZjIxM2ZkYjA5MmMwNDM3Mzk1OTJlNGY3MDA2MzY3YmMKIgi7iND866TIhWgQsajX0wYY7zEgDDC7yazABjgHQPQHSAQaAmxxIiA4NmFkODdhYWRiNjA3ZjEzYTc5OGNhNzQ5Nzc1ZjFlMg
@@ -56,9 +55,6 @@ www.bilibili.com	FALSE	/	FALSE	1786894304	bmg_src_def_domain	i2.hdslb.com
 .douyin.com	TRUE	/	FALSE	1787392339	is_dash_user	1
 .douyin.com	TRUE	/	FALSE	1787392338	stream_recommend_feed_params	%22%7B%5C%22cookie_enabled%5C%22%3Atrue%2C%5C%22screen_width%5C%22%3A1707%2C%5C%22screen_height%5C%22%3A1067%2C%5C%22browser_online%5C%22%3Atrue%2C%5C%22cpu_core_num%5C%22%3A32%2C%5C%22device_memory%5C%22%3A16%2C%5C%22downlink%5C%22%3A10%2C%5C%22effective_type%5C%22%3A%5C%224g%5C%22%2C%5C%22round_trip_time%5C%22%3A50%7D%22
 .douyin.com	TRUE	/	FALSE	1813214247	__druidClientInfo	JTdCJTIyY2xpZW50V2lkdGglMjIlM0E0ODUlMkMlMjJjbGllbnRIZWlnaHQlMjIlM0E4ODMlMkMlMjJ3aWR0aCUyMiUzQTQ4NSUyQyUyMmhlaWdodCUyMiUzQTg4MyUyQyUyMmRldmljZVBpeGVsUmF0aW8lMjIlM0ExLjUlMkMlMjJ1c2VyQWdlbnQlMjIlM0ElMjJNb3ppbGxhJTJGNS4wJTIwKFdpbmRvd3MlMjBOVCUyMDEwLjAlM0IlMjBXaW42NCUzQiUyMHg2NCklMjBBcHBsZVdlYktpdCUyRjUzNy4zNiUyMChLSFRNTCUyQyUyMGxpa2UlMjBHZWNrbyklMjBDaHJvbWUlMkYxNDkuMC4wLjAlMjBTYWZhcmklMkY1MzcuMzYlMjBFZGclMkYxNDkuMC4wLjAlMjIlN0Q=
-.douyin.com	TRUE	/	FALSE	1786811834	__security_mc_1_s_sdk_cert_key	52e4d4c6-4926-aed5
-.douyin.com	TRUE	/	FALSE	1786811834	__security_mc_1_s_sdk_crypt_sdk	343f6d9c-41f6-ac0d
-.douyin.com	TRUE	/	FALSE	1786811834	__security_mc_1_s_sdk_sign_data_key_web_protect	111f4fad-4249-b00b
 .douyin.com	TRUE	/	FALSE	1791971539	bd_ticket_guard_client_web_domain	2
 .douyin.com	TRUE	/	FALSE	1786894413	biz_trace_id	6e0f03b3
 .douyin.com	TRUE	/	FALSE	1804859044	d_ticket	3abb3b9fd7eb8d096647e22e05fa1f9692c20
@@ -68,7 +64,6 @@ www.bilibili.com	FALSE	/	FALSE	1786894304	bmg_src_def_domain	i2.hdslb.com
 .douyin.com	TRUE	/	FALSE	1787392353	IsDouyinActive	false
 .douyin.com	TRUE	/	FALSE	1818323546	odin_tt	a5fd4d39ef78acf6186ed0f72edf9ac8d6d77d7638947ed70cf3ba90d35315d76db3dfa7b8436600afc9142e5c30b9966872537a905a2833bfe2ca5add5ead0c7281b3023fa02f9a7db106ae2c29e5c8
 .douyin.com	TRUE	/	TRUE	1807883045	passport_assist_user	ClMI5XUT9eclP1Sjl0shG-6tQEpMLFBa0rLSdx8WL82JDphBHm-acstptKIaLRhE8riexkqcJBsZqIFDb_YSPHSucK36zDxZP6u7yvtEshNJghWHXBpKCjwAAAAAAAAAAAAAUCzMGfimMfpRpp1zIgZMH6hz2UHERH14htKiM-MhgyeTVNb4BYkgGJ_cH8fVXTSYmVYQ7_KLDhiJr9ZUIAEiAQN1bnZB
-.douyin.com	TRUE	/	FALSE	1786811833	passport_csrf_token_default	b1f002289368d20828f516e99137a4be
 .douyin.com	TRUE	/	FALSE	1787385898	publish_badge_show_info	%220%2C0%2C0%2C1786781098623%22
 .douyin.com	TRUE	/	TRUE	1791290930	sessionid	86ad87aadb607f13a798ca749775f1e2
 .douyin.com	TRUE	/	TRUE	1791290930	sid_tt	86ad87aadb607f13a798ca749775f1e2
@@ -77,10 +72,8 @@ www.bilibili.com	FALSE	/	FALSE	1786894304	bmg_src_def_domain	i2.hdslb.com
 .douyin.com	TRUE	/	TRUE	1791290930	uid_tt	3e95c653ec558af659b46031340199b68e23d5fbba9473b65ce6cdcda94969ac
 .douyin.com	TRUE	/	TRUE	1791290930	uid_tt_ss	3e95c653ec558af659b46031340199b68e23d5fbba9473b65ce6cdcda94969ac
 www.douyin.com	FALSE	/	FALSE	1786894413		douyin.com
-www.douyin.com	FALSE	/	FALSE	1786811828	s_v_web_id	verify_mqgv7idj_bt1ZjIP1_0Cjc_4ep3_ByXj_BJKzAg0miXhr
 www.douyin.com	FALSE	/	TRUE	1798729386	fpk1	U2FsdGVkX1+sxRZgzRjjWv3p8YN5pew+TRehFjOQTX4jVkli/61QjFG1qqv8ACFJDqeJFVHvqIzYBu2ye2W0sw==
 www.douyin.com	FALSE	/	FALSE	1786894413	device_web_memory_size	16
-www.douyin.com	FALSE	/	FALSE	1786809804	__ac_nonce	06a8086c300e275d09b30
 www.douyin.com	FALSE	/	TRUE	1818344004	__ac_signature	_02B4Z6wo00f0128IauQAAIDC-PfN8GWDcTNvKG5AALFN89
 www.douyin.com	FALSE	/	FALSE	1786894413	architecture	amd64
 www.douyin.com	FALSE	/	FALSE	1791971545	bd_ticket_guard_ts_sign_id	ts.2.6b01874d94448ed
