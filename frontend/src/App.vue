@@ -209,6 +209,11 @@
 
           <div v-else>
             <div v-if="sidebar.type === 'ai'">
+              <div class="agent-toolbar">
+                <button class="new-chat-btn" @click="startNewConversation" title="清空当前对话并开始新的分析">
+                  ＋ 新建对话
+                </button>
+              </div>
               <div class="markdown-content" v-html="renderedMarkdown"></div>
               <div v-if="sidebar.plan?.tasks?.length || traceStages.length" class="agent-inspector">
                 <div v-if="sidebar.plan?.tasks?.length" class="agent-meta-block">
@@ -478,6 +483,8 @@ const {
   transcribe,
   closeSidebar,
   openAgent,
+  startNewConversation,
+  getLastAgentMediaId,
   submitAgent,
   showDemoResult,
   startPlanEdit,
@@ -509,6 +516,8 @@ const deleteItem = async (item) => {
     if (text === '删除成功') {
       showMsg('文件已销毁')
       list.value = list.value.filter(i => i.id !== item.id)
+      // 删除该任务的智能体对话历史缓存
+      try { localStorage.removeItem('vidmind_agent_' + item.id) } catch (e) {}
     } else {
       showMsg('❌ ' + text, true)
     }
@@ -661,7 +670,7 @@ const handleAuthExpired = () => {
   openAuthModal()
 }
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('auth-expired', handleAuthExpired)
   if (DEMO_MODE) {
     currentUser.value = { id: 1, nickname: 'Agent Demo' }
@@ -676,7 +685,13 @@ onMounted(() => {
       currentUser.value = JSON.parse(savedUser)
     } catch(e) {}
   }
-  fetchList()
+  await fetchList()
+  // 刷新页面后自动恢复最近打开的视频智能体对话窗口
+  const lastMediaId = getLastAgentMediaId()
+  if (lastMediaId) {
+    const lastItem = list.value.find(item => item.id === lastMediaId)
+    if (lastItem) openAgent(lastItem)
+  }
 })
 onUnmounted(() => {
   window.removeEventListener('auth-expired', handleAuthExpired)
@@ -886,6 +901,13 @@ html, body, #app {
 .markdown-content p { margin-bottom: 1em; }
 
 /* Agent workspace */
+.agent-toolbar { display: flex; justify-content: flex-end; margin-bottom: 14px; }
+.new-chat-btn {
+  border: 1px solid var(--border-tech); background: transparent; color: var(--text-sub);
+  padding: 7px 14px; border-radius: 980px; cursor: pointer; font-family: inherit; font-size: 0.85rem;
+  transition: all 0.25s;
+}
+.new-chat-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .agent-composer { display: flex; flex-direction: column; gap: 18px; }
 .agent-caption { color: var(--text-sub); line-height: 1.7; }
 .agent-composer textarea, .follow-up-box textarea {

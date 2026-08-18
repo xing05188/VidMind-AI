@@ -28,6 +28,19 @@ function createSidebarState() {
   }
 }
 
+// 视频智能体对话历史持久化（localStorage，按 mediaId 隔离）
+const AGENT_STORAGE_PREFIX = 'vidmind_agent_'
+
+function loadAgentState(mediaId) {
+  try {
+    const raw = localStorage.getItem(AGENT_STORAGE_PREFIX + mediaId)
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch (e) {
+    return null
+  }
+}
+
 export function useAnalysisWorkspace({
   demoMode,
   taskStreams,
@@ -47,7 +60,31 @@ export function useAnalysisWorkspace({
     sidebar.value.content = ''
   }
 
+  // 保存当前智能体对话状态到 localStorage，便于关闭窗口后恢复
+  const persistAgentState = () => {
+    const s = sidebar.value
+    if (!s.mediaId) return
+    const data = {
+      type: s.type,
+      title: s.title,
+      mode: s.mode,
+      content: s.content,
+      goal: s.goal,
+      plan: s.plan,
+      trace: s.trace,
+      evaluation: s.evaluation,
+      feedback: s.feedback,
+      savedAt: Date.now()
+    }
+    try {
+      localStorage.setItem(AGENT_STORAGE_PREFIX + s.mediaId, JSON.stringify(data))
+    } catch (e) {
+      // 存储失败时静默忽略，不影响主流程
+    }
+  }
+
   const closeSidebar = () => {
+    persistAgentState()
     sidebar.value.visible = false
   }
 
@@ -83,6 +120,10 @@ export function useAnalysisWorkspace({
         sidebar.value.loading = false
         if (type === 'ai' && !failed) await refreshAgentMeta(id, goal, true)
       }
+      // 无论窗口是否可见都保存最新结果，保证执行中关闭再打开仍可恢复
+      if (sidebar.value.mediaId === id && sidebar.value.type === type) {
+        persistAgentState()
+      }
       showMessage(failed ? '任务执行失败，请稍后重试' : '任务完成', failed)
       taskStreams.stop(id, type)
     }
@@ -98,6 +139,8 @@ export function useAnalysisWorkspace({
         sidebar.value.content = status.state === 'PROCESSING' || status.state === 'QUEUED'
           ? status.message
           : sidebar.value.content
+        // 流式更新时也实时保存，保证对话执行中刷新也不丢
+        persistAgentState()
       }
       if (type === 'ai' && status.stage && sidebar.value.mediaId === id) {
         await refreshAgentMeta(id, goal, false)
@@ -182,12 +225,62 @@ export function useAnalysisWorkspace({
   }
 
   const openAgent = item => {
+    const saved = loadAgentState(item.id)
+    const base = {
+      ...createSidebarState(),
+      visible: true,
+      mediaId: item.id
+    }
+    if (saved && saved.type === 'ai') {
+      // 只要有该视频的智能体对话记录，就展示上次对话（而非初始界面）
+      base.title = saved.title || `Video Agent · ${item.filename}`
+      base.mode = saved.mode || 'result'
+      base.content = saved.content || ''
+      base.goal = saved.goal || base.goal
+      base.plan = saved.plan || null
+      base.trace = saved.trace || null
+      base.evaluation = saved.evaluation || null
+      base.feedback = saved.feedback || null
+    } else {
+      base.title = `Video Agent · ${item.filename}`
+    }
+    sidebar.value = base
+    // 记录最近打开的视频智能体，便于刷新页面后自动恢复
+    try {
+      localStorage.setItem(AGENT_STORAGE_PREFIX + 'last', String(item.id))
+    } catch (e) {}
+  }
+
+  // 新建对话：清空当前视频的对话历史并回到初始输入界面
+  const startNewConversation = () => {
+    const mediaId = sidebar.value.mediaId
+    if (mediaId != null) {
+      try { localStorage.removeItem(AGENT_STORAGE_PREFIX + mediaId) } catch (e) {}
+    }
     sidebar.value = {
       ...createSidebarState(),
       visible: true,
-      title: `Video Agent · ${item.filename}`,
-      mediaId: item.id
+      type: 'ai',
+      title: sidebar.value.title || 'Video Agent',
+      mediaId
     }
+  }
+
+  // 获取最近打开的视频智能体 mediaId，供刷新后自动恢复使用
+  const getLastAgentMediaId = () => {
+    try {
+      const raw = localStorage.getItem(AGENT_STORAGE_PREFIX + 'last')
+      return raw ? Number(raw) : null
+    } catch (e) {
+      return null
+    }
+  }
+
+  // 清除最近打开的记录
+  const clearLastAgent = () => {
+    try {
+      localStorage.removeItem(AGENT_STORAGE_PREFIX + 'last')
+    } catch (e) {}
   }
 
   const showDemoResult = () => {
@@ -288,6 +381,7 @@ export function useAnalysisWorkspace({
       if (!response.ok) throw new Error(answer || '追问失败')
       sidebar.value.content += `\n\n## 追问\n${question}\n\n${answer}`
       sidebar.value.followUp = ''
+      persistAgentState()
     } catch (error) {
       showMessage(`❌ ${error.message}`, true)
     } finally {
@@ -323,6 +417,9 @@ export function useAnalysisWorkspace({
     transcribe,
     closeSidebar,
     openAgent,
+    startNewConversation,
+    getLastAgentMediaId,
+    clearLastAgent,
     submitAgent,
     showDemoResult,
     startPlanEdit,
